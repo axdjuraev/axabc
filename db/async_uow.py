@@ -20,24 +20,32 @@ class BaseRepoCollector(ABC):
     _repos = None
 
     def __getattribute__(self, __name: str) -> Any:
-        if self._repos is None:
-            self._repos = {}
+        try:
+            attr = super().__getattribute__(__name)
+            return attr
+        except AttributeError:
+            if self._repos is None:
+                self.init_repos()
 
-            for name_, type_ in self.__class__.__annotations__:
-                if not inspect.isclass(type_):
+            if self._repos is not None:
+                repo = self._repos.get(__name)
+
+                if repo is None:
+                    raise
+                if self._uow is None:
                     raise NotImplementedError
 
-                if issubclass(type_, AbstractAsyncRepository):
-                    self._repos[name_] = type_
+                return self._uow.get_repo(repo)
 
-        cls = self._repos.get(__name)
+            raise
 
-        if cls:
-            if self._uow is None:
-                raise NotImplementedError("uow of the collection is not known")
+    def init_repos(self):
+        self._repos = {}
 
-            return self._uow.get_repo(cls)
+        for name_, type_ in self.__class__.__annotations__.items():
 
-        attr = super().__getattribute__(__name)
+            if not inspect.isclass(type_):
+                raise NotImplementedError
 
-        return attr
+            if issubclass(type_, AbstractAsyncRepository):
+                self._repos[name_] = type_
