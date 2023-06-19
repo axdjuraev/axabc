@@ -1,9 +1,10 @@
 from .async_repository import AbstractAsyncRepository
-from .async_uow import AbstractAsyncUOW, BaseRepoCollector, TRepo
+from .async_uow import AbstractUOW, AbstractUOWFactory, BaseRepoCollector, TRepo
 
 __all__ = [
     "AbstractAsyncRepository",
-    "AbstractAsyncUOW",
     "BaseRepoCollector",
     "TRepo",
+    "AbstractUOW",
+    "AbstractUOWFactory",
 ]

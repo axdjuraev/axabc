@@ -3,20 +3,37 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Any, Type, TypeVar, Union
 
-from db.async_repository import AbstractAsyncRepository
+from .async_repository import AbstractAsyncRepository
 
 TRepo = TypeVar("TRepo", bound=AbstractAsyncRepository)
 
 
-class AbstractAsyncUOW(ABC):
+TUOW = TypeVar("TUOW", bound=AbstractAsyncRepository)
+
+
+class AbstractUOW(ABC):
+    def __init__(self, repo, session: Any) -> None:
+        self.repo = repo(_uow=self)
+        self.session = session
+
     @abstractmethod
     def get_repo(self, repo_cls: Type[TRepo]) -> TRepo:
         raise NotImplementedError
 
 
+class AbstractUOWFactory(ABC):
+    @abstractmethod
+    async def __aenter__(self) -> AbstractUOW:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        raise NotImplementedError
+
+
 @dataclass
 class BaseRepoCollector(ABC):
-    _uow: Union[AbstractAsyncUOW, None] = None
+    _uow: Union[AbstractUOW, None] = None
     _repos = None
 
     def __getattribute__(self, __name: str) -> Any:
@@ -43,7 +60,6 @@ class BaseRepoCollector(ABC):
         self._repos = {}
 
         for name_, type_ in self.__class__.__annotations__.items():
-
             if not inspect.isclass(type_):
                 raise NotImplementedError
 
