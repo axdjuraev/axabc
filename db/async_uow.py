@@ -21,16 +21,6 @@ class AbstractUOW(ABC):
         raise NotImplementedError
 
 
-class AbstractUOWFactory(ABC):
-    @abstractmethod
-    async def __aenter__(self) -> AbstractUOW:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
-        raise NotImplementedError
-
-
 @dataclass
 class BaseRepoCollector(ABC):
     _uow: Union[AbstractUOW, None] = None
@@ -65,3 +55,13 @@ class BaseRepoCollector(ABC):
 
             if issubclass(type_, AbstractAsyncRepository):
                 self._repos[name_] = type_
+
+
+class AbstractUOWFactory(ABC):
+    def __init__(self, session_maker, repo: Type[BaseRepoCollector]) -> None:
+        self.session_maker = session_maker
+        self.repo = repo
+
+    @abstractmethod
+    def __call__(self) -> AbstractUOW:
+        raise NotImplementedError
