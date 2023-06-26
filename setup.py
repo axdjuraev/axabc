@@ -1,6 +1,8 @@
 from setuptools import find_packages, setup
 
-VERSION = "0.0.1"
+with open("VERSION", "r") as f:
+    VERSION = f.read().strip()
+
 DESCIPTION = "library that defines abstractions for some repeated essences"
 
 with open("requirements.txt", "r") as requirements_file:
