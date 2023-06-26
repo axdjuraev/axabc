@@ -11,6 +11,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -41,7 +44,7 @@ jobs:
           author_email: "axdjuraev@gmail.com"
           author_name: "axdjuraev"
           branch: "main"
-          message: "bump_version"
+          message: "bump-version"
           directory: .
 
       - name: Upload to PyPI
