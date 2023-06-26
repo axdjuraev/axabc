@@ -30,14 +30,11 @@ jobs:
           python setup.py sdist bdist_wheel
 
       - name: Commit & Push changes
-        uses: actions-js/push@master
-        with:
-          github_token: ${{ secrets.TOKEN_OF_GITHUB }}
-          author_email: "axdjuraev@gmail.com"
-          author_name: "axdjuraev"
-          branch: "main"
-          message: "Bump version"
-          directory: .
+        run: |
+          git config --global user.name 'axdjuraev'
+          git config --global user.email 'axdjuraev@gmail.com'
+          git commit -am 'bump-version'
+          git push
 
       - name: Upload to PyPI
         env:
