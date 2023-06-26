@@ -29,12 +29,6 @@ jobs:
         run: |
           python setup.py sdist bdist_wheel
 
-      - name: Commit version change
-        run: |
-          git config user.name "axdjuraev"
-          git config user.email "axdjuraev@gmail.com"
-          git commit -a -m "Bump version"
-
       - name: Commit & Push changes
         uses: actions-js/push@master
         with:
@@ -42,6 +36,8 @@ jobs:
           author_email: "axdjuraev@gmail.com"
           author_name: "axdjuraev"
           branch: "main"
+          message: "Bump version"
+          directory: .
 
       - name: Upload to PyPI
         env:
