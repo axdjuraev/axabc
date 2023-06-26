@@ -65,3 +65,4 @@ class AbstractUOWFactory(ABC):
     @abstractmethod
     def __call__(self) -> AbstractUOW:
         raise NotImplementedError
+
