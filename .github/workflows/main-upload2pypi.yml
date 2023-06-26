@@ -30,6 +30,11 @@ jobs:
           python setup.py sdist bdist_wheel
 
       - name: Commit & Push changes
+
+        # if u gonna reuse this step in ur workflow file
+        #   first allow `read and write` pessmissions in
+        #     repo settings actions>general>workflow permissions section
+
         uses: actions-js/push@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
