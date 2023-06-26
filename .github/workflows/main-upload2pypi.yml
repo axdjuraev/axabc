@@ -34,7 +34,7 @@ jobs:
           git config --global user.name 'axdjuraev'
           git config --global user.email 'axdjuraev@gmail.com'
           git commit -am 'bump-version'
-          git push
+          git push ${{ secrets.REPO_MAIN }}
 
       - name: Upload to PyPI
         env:
