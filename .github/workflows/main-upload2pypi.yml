@@ -32,11 +32,11 @@ jobs:
       - name: Commit & Push changes
         uses: actions-js/push@master
         with:
-          github_token: ${{ secrets.TOKEN_OF_GITHUB }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           author_email: "axdjuraev@gmail.com"
           author_name: "axdjuraev"
           branch: "main"
-          message: "Bump version"
+          message: "bump_version"
           directory: .
 
       - name: Upload to PyPI
