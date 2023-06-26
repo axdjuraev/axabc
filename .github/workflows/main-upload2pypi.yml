@@ -35,11 +35,13 @@ jobs:
           git config user.email "axdjuraev@gmail.com"
           git commit -a -m "Bump version"
 
-      - name: Push changes
-        uses: ad-m/github-push-action@master
+      - name: Commit & Push changes
+        uses: actions-js/push@master
         with:
           github_token: ${{ secrets.TOKEN_OF_GITHUB }}
-          branch: main
+          author_email: "axdjuraev@gmail.com"
+          author_name: "axdjuraev"
+          branch: "main"
 
       - name: Upload to PyPI
         env:
