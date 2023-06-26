@@ -23,7 +23,7 @@ jobs:
 
       - name: Increment package version
         run: |
-          bump2version --allow-dirty patch  # Change 'patch' to 'minor' or 'major' if desired
+          python3 -m bumpversion --current-version $(cat VERSION) patch VERSION
 
       - name: Build package
         run: |
