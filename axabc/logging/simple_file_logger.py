@@ -12,10 +12,10 @@ class SimpleFileLogger(LoggerWithID):
         # Create a console handler to display logs on the console
         console_handler = logging.StreamHandler()
         console_handler.setFormatter(formatter)
-        logger.addHandler(console_handler)
+        self.addHandler(console_handler)
         
         if filename is not None:
             # Create a file handler to write logs to a file
             file_handler = logging.FileHandler(filename)
             file_handler.setFormatter(formatter)
-            logger.addHandler(file_handler)
+            self.addHandler(file_handler)
