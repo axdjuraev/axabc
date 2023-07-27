@@ -1,5 +1,6 @@
 import logging
 from .logger_with_id import LoggerWithID
+from datetime import datetime
 
 
 class SimpleFileLogger(LoggerWithID):
@@ -15,7 +16,9 @@ class SimpleFileLogger(LoggerWithID):
         self.addHandler(console_handler)
         
         if filename is not None:
-            filename = name if filename is ... else filename
+            if filename is ...:
+                date = datetime.now().strftime('%Y-%m-%d')
+                filename = f"{filename}-{date}.log"
 
             # Create a file handler to write logs to a file
             file_handler = logging.FileHandler(filename)
