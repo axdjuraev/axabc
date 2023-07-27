@@ -18,7 +18,7 @@ class SimpleFileLogger(LoggerWithID):
         if filename is not None:
             if filename is ...:
                 date = datetime.now().strftime('%Y-%m-%d')
-                filename = f"{filename}-{date}.log"
+                filename = f"{name}-{date}.log"
 
             # Create a file handler to write logs to a file
             file_handler = logging.FileHandler(filename)
