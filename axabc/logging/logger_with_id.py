@@ -8,8 +8,8 @@ class LogResult:
     msg: str
 
 class LoggerWithID(logging.Logger):
-    def __init__(self, name):
-        super().__init__(name)
+    def __init__(self, name, level=NOTSET):
+        super().__init__(name, level=level)
 
     def _log(self, level, msg, args, **kwargs):
         unique_id = uuid4()
