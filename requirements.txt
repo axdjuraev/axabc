@@ -1,2 +1,2 @@
-uuid==22.2.1
+uuid==1.30
 pydantic==1.10.4
