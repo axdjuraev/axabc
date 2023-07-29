@@ -27,8 +27,10 @@ class LoggerWithID(logging.Logger):
     def critical(self, msg, *args, **kwargs):
         return self._log(logging.CRITICAL, msg, args, **kwargs)
 
-    def _log(self, level, msg, args, **kwargs):
-        unique_id = uuid4()
+    def _log(self, level, msg, args, unique_id=None, **kwargs):
+        if not unique_id:
+            unique_id = uuid4()
+
         msg = f"{msg} [LOG_ID: {unique_id}]"
 
         if self.isEnabledFor(level):
