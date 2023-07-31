@@ -8,33 +8,25 @@ class QualNameLogger(logging.Logger):
         super().__init__(name, level)
 
         if base_path is ...:
-            frame = self._get_frame()
+            frame = self._get_init_frame()
             base_path = os.path.dirname(frame.f_code.co_filename) if frame else None
 
         self.base_path = base_path
 
-    def _get_frame(self, back_size = 0):
-        # Get the current frame (frame of the current function)
-        back_size = back_size + 2  # minimum back_size
+    def _get_init_frame(self):
         frame = inspect.currentframe()
 
-        # Go back one frame to get the calling function frame
-        for _ in range(back_size):
-            if frame is None:
-                return
-
+        while frame and 'self' in frame.f_locals and frame.f_locals['self'] is self:
             frame = frame.f_back
 
-        # Get the calling function object from the frame
         return frame
 
     def _get_entity(self, frame):
         entity = frame.f_globals.get(frame.f_code.co_name)
         return entity
 
-
-    def get_qualname(self, back_frame_size=1):
-        frame = self._get_frame(back_frame_size + 1)  # 1 for including itself func
+    def get_qualname(self):
+        frame = self._get_init_frame()
 
         if not frame:
             return '__main__'
@@ -52,8 +44,8 @@ class QualNameLogger(logging.Logger):
 
         return f"{filename}:{qualname}:{frame.f_code.co_firstlineno}"
 
-    def _log(self, level, msg, args, *, back_frame_size=1, **kwargs):
-        qualname = self.get_qualname(back_frame_size)
+    def _log(self, level, msg, args, **kwargs):
+        qualname = self.get_qualname()
         msg = f'({qualname}): {msg}'
 
         return super()._log(level, msg, args, **kwargs)
