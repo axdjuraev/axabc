@@ -30,11 +30,11 @@ class BotLogger(SimpleFileLogger):
         self.parse_mode = 'Markdown'
         self.hidden_url = hidden_url
 
-    async def send_event(self, msg: str, chat_id: int = ...) -> Any:
+    async def send_event(self, msg: str, chat_id: int = ..., **kwargs) -> Any:
         if chat_id is ...:
             chat_id = self.chat_id
 
-        return await self.bot.send_message(chat_id, msg, parse_mode=self.parse_mode)
+        return await self.bot.send_message(chat_id, msg, parse_mode=self.parse_mode, **kwargs)
 
     async def info(self, msg, stream_only=False, chat_id: int = ..., *args, **kwargs):
         return await self.log(logging.INFO, msg, stream_only, chat_id, *args, **kwargs)
@@ -56,7 +56,7 @@ class BotLogger(SimpleFileLogger):
 
         if not stream_only:
             bot_msg = f'{msg} [.]({magic_url})'
-            message = await self.send_event(bot_msg, chat_id)
+            message = await self.send_event(bot_msg, chat_id, **kwargs)
             message_id = message.id if hasattr(message, 'id') else message.message_id
 
         log_msg = f"{msg} [MESSAGE_ID: {message_id}]"
