@@ -29,6 +29,7 @@ class BotLogger(SimpleFileLogger):
         self.chat_id = chat_id
         self.parse_mode = 'Markdown'
         self.hidden_url = hidden_url
+        self.limit = 4000
 
     async def send_event(self, msg: str, chat_id: int = ..., **kwargs) -> Any:
         if chat_id is ...:
@@ -55,7 +56,8 @@ class BotLogger(SimpleFileLogger):
         message_id = None
 
         if not stream_only:
-            bot_msg = f'{msg} [.]({magic_url})'
+            bot_msg = msg[:self.limit] + '...' if len(msg) > self.limit else msg
+            bot_msg = f'{bot_msg}[.]({magic_url})'
             message = await self.send_event(bot_msg, chat_id, **kwargs)
             message_id = message.id if hasattr(message, 'id') else message.message_id
 
