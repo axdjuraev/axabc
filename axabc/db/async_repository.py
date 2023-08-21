@@ -6,8 +6,9 @@ from pydantic import BaseModel
 TModel = TypeVar('TModel')
 
 class AbstractAsyncRepository(ABC):
-    Model = BaseModel
-    OModel = BaseModel
+    DBModel: Any
+    IModel: Any
+    OModel: Any
 
     def __init__(self, session: Any) -> None:
         self.session = session
