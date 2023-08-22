@@ -3,8 +3,6 @@ from typing import Any, List, TypeVar, Union
 
 
 TModel = TypeVar('TModel')
-from pydantic import BaseModel
-
 
 
 class AbstractAsyncRepository(ABC):
