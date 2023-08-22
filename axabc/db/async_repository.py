@@ -1,15 +1,8 @@
 from abc import ABC, abstractmethod
-from typing import Any, List, TypeVar, Union
-
-
-TModel = TypeVar('TModel')
+from typing import Any, List, Union
 
 
 class AbstractAsyncRepository(ABC):
-    Model: Any
-    Schema: Any
-    OSchema: Any
-
     def __init__(self, session: Any) -> None:
         self.session = session
 
