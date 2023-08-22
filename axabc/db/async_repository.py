@@ -1,14 +1,16 @@
 from abc import ABC, abstractmethod
 from typing import Any, List, TypeVar, Union
 
-from pydantic import BaseModel
 
 TModel = TypeVar('TModel')
+from pydantic import BaseModel
+
+
 
 class AbstractAsyncRepository(ABC):
-    DBModel: Any
-    IModel: Any
-    OModel: Any
+    Model: Any
+    Schema: Any
+    OSchema: Any
 
     def __init__(self, session: Any) -> None:
         self.session = session
