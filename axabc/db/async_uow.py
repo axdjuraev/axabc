@@ -3,11 +3,11 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Any, Type, TypeVar, Union
 
+from axabc.initialization.annotation import get_initializable_annotations
 from .async_repository import AbstractAsyncRepository
 
+
 TRepo = TypeVar("TRepo", bound=AbstractAsyncRepository)
-
-
 TUOW = TypeVar("TUOW", bound=AbstractAsyncRepository)
 
 
@@ -49,12 +49,8 @@ class BaseRepoCollector(ABC):
     def init_repos(self):
         self._repos = {}
 
-        for name_, type_ in self.__class__.__annotations__.items():
-            if not inspect.isclass(type_):
-                raise NotImplementedError
-
-            if issubclass(type_, AbstractAsyncRepository):
-                self._repos[name_] = type_
+        for name_, type_ in get_initializable_annotations(self.__class__, AbstractAsyncRepository):
+            self._repos[name_] = type_
 
 
 class AbstractUOWFactory(ABC):
