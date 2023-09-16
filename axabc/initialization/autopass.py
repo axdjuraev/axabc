@@ -9,6 +9,7 @@ class AutoPass:
 
     def retrieve(self, callable: Callable, kwargs: Optional[dict] = None, args: Iterable = tuple()) -> tuple[list, dict]:
         kwargs = kwargs or {}
+        args = list(args)
         parameters = inspect.signature(callable).parameters.values()
         values = {}
 
@@ -41,7 +42,9 @@ class AutoPass:
     def _find_param_value(self, param: inspect.Parameter, args: Iterable, kwargs: dict, depth: int, max_depth: int):
         if param.name in kwargs:
             return kwargs[param.name]
+
         elif param.annotation is not inspect._empty and type(param.annotation) is not str:
+            args = (*kwargs.values(), *args)
             if hasattr(param.annotation, '__origin__') and param.annotation.__origin__ is type:
                 return self._search_through_args_classes(param, args)
             elif inspect.isclass(param.annotation):

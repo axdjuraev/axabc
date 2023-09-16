@@ -15,9 +15,11 @@ class LazyInitializableCollection(ABC):
         kwargs: Optional[dict] = None,
         apass: Optional[AutoPass] = None,
     ):
+        args = args or []
         apass = apass or AutoPass()
 
         for name_, type_ in get_initializable_annotations(cls, cls.BaseItemClass):
+            args_, kwargs_ = apass.retrieve(type_, *args)
 
             
 

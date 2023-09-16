@@ -9,17 +9,14 @@
 
 ## Basic Tests
 >>> def a(a: int, b, c):
-...     print('   ', [1, 2, 3])
+...     print('   ', [a, b, c])
 
 >>> apass(a, kwargs={'a': 1, 'b': 2, 'c': 3})
     [1, 2, 3]
 >>> apass(a, kwargs={'b': 2, 'c': 3}, args=[1])
     [1, 2, 3]
 >>> apass(a, kwargs={'b': 2, 'c': 3})
-Traceback (most recent call last):
-...
-ValueError: Could not find value for parameter (`a.a:<class 'int'>`)
-
+    [3, 2, 3]
 
 
 ## Args Position Tests
