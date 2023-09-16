@@ -37,9 +37,9 @@ class AutoPass:
         if param.name in kwargs:
             return kwargs[param.name]
         elif param.annotation is not inspect._empty and type(param.annotation) is not str:
-            if inspect.isclass(param.annotation):
-                return self._search_through_args_instance(param, args, depth, max_depth)
-            elif hasattr(param.annotation, '__origin__') and param.annotation.__origin__ is type:
+            if hasattr(param.annotation, '__origin__') and param.annotation.__origin__ is type:
+                return self._search_through_args_classes(param, args)
+            elif inspect.isclass(param.annotation):
                 return self._search_through_args_instance(param, args, depth, max_depth)
 
         return inspect._empty
@@ -67,7 +67,7 @@ class AutoPass:
         founds = []
 
         for arg in args:
-            if inspect.isclass(arg) and issubclass(arg, param.annotation):
+            if inspect.isclass(arg) and issubclass(arg, param.annotation.__args__[-1]):
                 founds.append(arg)
 
         if not founds:

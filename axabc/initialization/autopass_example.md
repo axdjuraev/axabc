@@ -46,6 +46,24 @@ SomeSettings SomeSettings2
 >>> apass(magic, args=[SomeModel()])
 True
 
+
+
+
+## ClassType Requirements Tests
+>>> from typing import Type
+
+>>> class SomeModel1(BaseModel):
+...     pass
+
+>>> class SomeModel2(BaseModel):
+...     pass
+
+>>> def magic(req1: Type[SomeModel1], req2: Type[SomeModel2]):
+...     print(req1 is SomeModel1 and req2 is SomeModel2)
+
+>>> apass(magic, args=[SomeModel1, SomeModel2])
+True
+
 ```
 """
 
