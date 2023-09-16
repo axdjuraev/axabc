@@ -7,7 +7,7 @@ class AutoPass:
         self.depth = recursion_depth
         self.max_recursion = max_recursion
 
-    def pass_(self, callable: Callable, kwargs: Optional[dict] = None, args: Iterable = tuple()):
+    def retrieve(self, callable: Callable, kwargs: Optional[dict] = None, args: Iterable = tuple()) -> tuple[list, dict]:
         kwargs = kwargs or {}
         parameters = inspect.signature(callable).parameters.values()
         values = {}
@@ -23,6 +23,11 @@ class AutoPass:
         kwargs_start_index = self._get_signature_kwargs_start_index(parameters)
         args = list(values.values())[:kwargs_start_index]
         kwargs = dict(tuple(values.items())[kwargs_start_index:])
+        
+        return args, kwargs
+
+    def pass_(self, callable: Callable, kwargs: Optional[dict] = None, args: Iterable = tuple()):
+        args, kwargs = self.retrieve(callable, kwargs, args)
 
         return callable(*args, **kwargs)
 

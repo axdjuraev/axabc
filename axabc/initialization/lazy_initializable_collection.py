@@ -16,6 +16,9 @@ class LazyInitializableCollection(ABC):
         apass: Optional[AutoPass] = None,
     ):
         apass = apass or AutoPass()
-        for name_, type_ in get_initializable_annotations():
+
+        for name_, type_ in get_initializable_annotations(cls, cls.BaseItemClass):
+
+            
 
 
