@@ -1,5 +1,6 @@
 import inspect
-from typing import Callable, Iterable, Optional
+from typing import Any, Callable, Iterable, Optional
+from typing import _CallableGenericAlias  # type: ignore
 
 
 class AutoPass:
@@ -39,12 +40,22 @@ class AutoPass:
 
         return None
 
-    def _find_param_value(self, param: inspect.Parameter, args: Iterable, kwargs: dict, depth: int, max_depth: int):
-        if param.name in kwargs:
+    def _find_param_value(
+        self, 
+        param: inspect.Parameter, 
+        args: Iterable, 
+        kwargs: dict, 
+        depth: int, 
+        max_depth: int,
+        strict: bool = False,
+    ):
+        if param.name in kwargs and not strict:
             return kwargs[param.name]
 
         elif param.annotation is not inspect._empty and type(param.annotation) is not str:
             args = (*kwargs.values(), *args)
+            if type(param.annotation) is _CallableGenericAlias:
+                return self._search_callable(param, args, kwargs, depth, max_depth)
             if hasattr(param.annotation, '__origin__') and param.annotation.__origin__ is type:
                 return self._search_through_args_classes(param, args)
             elif inspect.isclass(param.annotation):
@@ -52,6 +63,32 @@ class AutoPass:
 
         return inspect._empty
 
+    def _search_callable(self, param: inspect.Parameter, args, kwargs: dict, depth: int, max_depth: int):
+        found = kwargs.get(param.name)
+        if not found or not isinstance(found, Callable):
+            if depth > max_depth:
+                return inspect._empty
+
+            kwargs = self._get_kwargs(args)
+            return self._find_param_value(param, args, kwargs, (depth + 1), max_depth, strict=True)
+
+        sign = inspect.signature(found)
+        sign_annotations = map(lambda s: s.annotation, sign.parameters.values())
+        callable_reqs = param.annotation.__args__
+        callable_reqs_len = len(callable_reqs)
+
+        for index, annot in enumerate(sign_annotations):
+            if callable_reqs_len < (index + 1):
+                break
+            if callable_reqs_len == (index + 1):
+                annot = sign.return_annotation
+            if callable_reqs[index] is Any:
+                continue
+            if annot is param.empty or not isinstance(annot, callable_reqs[index]):
+                return param.empty
+        
+        return found
+        
     def _search_through_args_instance(self, param: inspect.Parameter, args: Iterable, depth: int, max_depth: int):
         founds = []
 
@@ -64,12 +101,11 @@ class AutoPass:
                 return inspect._empty
 
             kwargs = self._get_kwargs(args)
-            return self._find_param_value(param, args, kwargs, (depth + 1), max_depth)
-        else:
-            if len(founds) == 1:
-                return founds[-1]
-            else:
-                return self._get_instance_base_mro(param.annotation, founds)
+            return self._find_param_value(param, args, kwargs, (depth + 1), max_depth, strict=True)
+
+        if len(founds) == 1:
+            return founds[-1]
+        return self._get_instance_base_mro(param.annotation, founds)
 
     def _search_through_args_classes(self, param: inspect.Parameter, args: Iterable):
         founds = []
@@ -83,8 +119,8 @@ class AutoPass:
 
         if len(founds) == 1:
             return founds[-1]
-        else:
-            return self._get_class_base_mro(param.annotation, founds)
+
+        return self._get_class_base_mro(param.annotation, founds)
 
     def _get_kwargs(self, args):
         kwargs = {}

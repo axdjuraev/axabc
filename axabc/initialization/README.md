@@ -64,6 +64,55 @@ True
 
 
 
+## Test Callable pass
+>>> from typing import Callable
+>>> class SomeModel1:
+...     def __init__(self, magic: Callable[[int, str], float]):
+...         print(magic == real_magic)
+
+>>> def magic(a: int, b: str) -> float:
+...     print(req1 is SomeModel1 and req2 is SomeModel2)
+
+>>> def lie(a: int, b: float) -> float:
+...     print(req1 is SomeModel1 and req2 is SomeModel2)
+
+>>> def lie2(a: int, b: int) -> float:
+...     print(req1 is SomeModel1 and req2 is SomeModel2)
+
+>>> real_magic = magic
+
+>>> _ = apass(SomeModel1, kwargs={'lie': lie, 'lie2': lie2, 'magic': magic})
+True
+
+
+
+
+## Test Callable pass through recursive
+>>> from typing import Callable
+>>> class SomeModel:
+...     def __init__(self, logger):
+...         print(magic == real_magic)
+>>> class SomeModel1:
+...     def __init__(self, magic: Callable[[int, str], float]):
+...         print(magic == real_magic)
+
+>>> def magic(a: int, b: str) -> float:
+...     print(req1 is SomeModel1 and req2 is SomeModel2)
+
+>>> def lie(a: int, b: float) -> float:
+...     print(req1 is SomeModel1 and req2 is SomeModel2)
+
+>>> def lie2(a: int, b: int) -> float:
+...     print(req1 is SomeModel1 and req2 is SomeModel2)
+
+>>> real_magic = magic
+
+>>> _ = apass(SomeModel1, kwargs={'lie': lie, 'lie2': lie2, 'magic': magic})
+True
+
+
+
+
 # LazyInitializableCollection Tests
 >>> from abc import ABC
 >>> from axabc.initialization.lazy_collection import LazyInitializableCollection
@@ -72,6 +121,7 @@ True
 >>> class BaseSettings(ABC):
 ...     def __init__(self, logger: SimpleFileLogger):
 ...         self.logger = logger
+
 
 >>> class Settings1(BaseSettings): ...
 
