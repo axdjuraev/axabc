@@ -61,6 +61,48 @@ True
 >>> apass(magic, args=[SomeModel1, SomeModel2])
 True
 
+
+
+
+# LazyInitializableCollection Tests
+>>> from abc import ABC
+>>> from axabc.initialization.lazy_collection import LazyInitializableCollection
+>>> from axabc.logging.simple_file_logger import SimpleFileLogger
+
+>>> class BaseSettings(ABC):
+...     def __init__(self, logger: SimpleFileLogger):
+...         self.logger = logger
+
+>>> class Settings1(BaseSettings): ...
+
+
+>>> class Settings2(BaseSettings):
+...     def __init__(self, logger: SimpleFileLogger, magic: Settings1):
+...         self.logger = logger
+...         self.magic = magic
+
+
+>>> class Settings3(BaseSettings):
+...     def __init__(self, logger: SimpleFileLogger, magic: Settings2):
+...         self.logger = logger
+...         self.magic = magic
+
+
+>>> class SettingsCollection(LazyInitializableCollection):
+...     settings1: Settings1
+...     settings2: Settings2
+...     settings3: Settings3
+
+>>> logger = SimpleFileLogger('really simple')
+
+>>> settings_collection, _, _ = SettingsCollection.create(args=[logger])
+
+>>> print(
+...     type(settings_collection.settings3) is Settings3, 
+...     type(settings_collection.settings1) is Settings1,
+... )
+True True
+
 ```
 """
 
