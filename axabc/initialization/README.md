@@ -87,28 +87,26 @@ True
 
 
 
-## Test Callable pass through recursive
+## Test LazyInitializableCollection Callable pass through recursive
 >>> from typing import Callable
+>>> from logging import Logger
+>>> from axabc.initialization.lazy_collection import LazyInitializableCollection
+
 >>> class SomeModel:
-...     def __init__(self, logger):
-...         print(magic == real_magic)
->>> class SomeModel1:
-...     def __init__(self, magic: Callable[[int, str], float]):
-...         print(magic == real_magic)
+...     def __init__(self, logger: Logger): assert type(logger) == Logger
+...     def magic(self, a: int, b: str) -> float: ...
 
->>> def magic(a: int, b: str) -> float:
-...     print(req1 is SomeModel1 and req2 is SomeModel2)
+>>> class SomeModel2:
+...     def __init__(self, logger: Logger, magic: Callable[[int, str], float]):  assert magic.__func__ == SomeModel(logger).magic.__func__
 
->>> def lie(a: int, b: float) -> float:
-...     print(req1 is SomeModel1 and req2 is SomeModel2)
+>>> class ModelsCollection(LazyInitializableCollection):
+...     model: SomeModel
+...     model2: SomeModel2
 
->>> def lie2(a: int, b: int) -> float:
-...     print(req1 is SomeModel1 and req2 is SomeModel2)
+>>> def lie(a: int, b: float) -> float: ...
+>>> def lie2(a: int, b: int) -> float: ...
 
->>> real_magic = magic
-
->>> _ = apass(SomeModel1, kwargs={'lie': lie, 'lie2': lie2, 'magic': magic})
-True
+>>> _ = ModelsCollection.create(args=[Logger('shit')], kwargs={'lie': lie, 'lie2': lie2})
 
 
 

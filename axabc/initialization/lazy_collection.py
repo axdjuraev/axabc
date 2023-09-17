@@ -1,6 +1,6 @@
 from abc import ABC
 from typing import Any, Optional
-from axabc.initialization.autopass import AutoPass
+from autopass import AutoPass
 from axabc.initialization.annotation import get_initializable_annotations
 
 

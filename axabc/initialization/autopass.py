@@ -25,7 +25,7 @@ class AutoPass:
         kwargs_start_index = self._get_signature_kwargs_start_index(parameters)
         args = list(values.values())[:kwargs_start_index]
         kwargs = dict(tuple(values.items())[kwargs_start_index:])
-        
+
         return args, kwargs
 
     def pass_(self, callable: Callable, kwargs: Optional[dict] = None, args: Iterable = tuple()):
@@ -41,11 +41,11 @@ class AutoPass:
         return None
 
     def _find_param_value(
-        self, 
-        param: inspect.Parameter, 
-        args: Iterable, 
-        kwargs: dict, 
-        depth: int, 
+        self,
+        param: inspect.Parameter,
+        args: Iterable,
+        kwargs: dict,
+        depth: int,
         max_depth: int,
         strict: bool = False,
     ):
@@ -84,11 +84,11 @@ class AutoPass:
                 annot = sign.return_annotation
             if callable_reqs[index] is Any:
                 continue
-            if annot is param.empty or not isinstance(annot, callable_reqs[index]):
+            if annot is param.empty or not issubclass(annot, callable_reqs[index]):
                 return param.empty
-        
+
         return found
-        
+
     def _search_through_args_instance(self, param: inspect.Parameter, args: Iterable, depth: int, max_depth: int):
         founds = []
 
@@ -127,6 +127,15 @@ class AutoPass:
         for arg in args:
             if hasattr(arg, '__dict__'):
                 kwargs.update(arg.__dict__)
+            if hasattr(arg, '__dir__'):
+                for name in dir(arg):
+                    if name.startswith('__'):
+                        continue
+
+                    val = getattr(arg, name)
+
+                    if isinstance(val, Callable):
+                        kwargs[name] = val
 
         return kwargs
 
