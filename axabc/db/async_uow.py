@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Type
 
-from .abstract_uow import AbstractUOW
+from .uow import AbstractUOW
 from .repo_collector import BaseRepoCollector
 
 
