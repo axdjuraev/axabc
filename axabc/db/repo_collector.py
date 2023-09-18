@@ -10,17 +10,17 @@ from .uow import AbstractUOW
 @dataclass
 class BaseRepoCollector(ABC):
     _uow: Optional[AbstractUOW] = None
-    _repos: dict = field(default_factory=lambda: {})
-
-    def __init__(self) -> None:
-        self.init_repos()
+    _repos: Optional[dict] = None
 
     def __getattribute__(self, __name: str):
         try:
             attr = super().__getattribute__(__name)
             return attr
         except AttributeError:
-            repo = self._repos.get(__name)
+            if self._repos is None:
+                self.init_repos()
+
+            repo = self._repos.get(__name)  # type: ignore
 
             if repo is None:
                 raise
@@ -34,7 +34,8 @@ class BaseRepoCollector(ABC):
 
         for name_, type_ in get_initializable_annotations(self.__class__, AbstractAsyncRepository):
             self._repos[name_] = type_
-
-    def get_repos(self) -> Iterable:
-        return self._repos.keys()
+    
+    @classmethod
+    def get_repos(cls) -> Iterable:
+        return cls._repos.keys()  # type: ignore
 

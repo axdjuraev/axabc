@@ -1,4 +1,4 @@
-from typing import Protocol, runtime_checkable
+from typing import Protocol, Type, runtime_checkable
 from .repo_collector import BaseRepoCollector
 
 
@@ -24,7 +24,7 @@ class SessionMaker(Protocol):
 
 
 class SessionMakersMapper:
-    def __init__(self, repos: BaseRepoCollector, common: SessionMaker, mapper: dict[str, SessionMaker]) -> None:
+    def __init__(self, repos: Type[BaseRepoCollector], common: SessionMaker, mapper: dict[str, SessionMaker]) -> None:
         self.repos = repos
         self.common = common
         self.mapper = mapper
