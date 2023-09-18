@@ -1,15 +1,15 @@
 from abc import ABC
 from dataclasses import field, dataclass
-from typing import Iterable
+from typing import Iterable, Optional
 
 from axabc.initialization.annotation import get_initializable_annotations
 from .async_repository import AbstractAsyncRepository
-from .abstract_uow import AbstractUOW
+from .uow import AbstractUOW
 
 
 @dataclass
 class BaseRepoCollector(ABC):
-    _uow: AbstractUOW
+    _uow: Optional[AbstractUOW] = None
     _repos: dict = field(default_factory=lambda: {})
 
     def __init__(self) -> None:
