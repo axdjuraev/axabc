@@ -1,14 +1,15 @@
 from abc import ABC
-from dataclasses import field, dataclass
+from dataclasses import dataclass
 from typing import Iterable, Optional
 
 from axabc.initialization.annotation import get_initializable_annotations
 from .async_repository import AbstractAsyncRepository
-from .uow import AbstractUOW
+from .abstract_uow import AbstractUOW
+from .abstract_repo_collector import AbstractRepoCollector
 
 
 @dataclass
-class BaseRepoCollector(ABC):
+class BaseRepoCollector(AbstractRepoCollector, ABC):
     _uow: Optional[AbstractUOW] = None
     _repos: Optional[dict] = None
 
@@ -21,7 +22,6 @@ class BaseRepoCollector(ABC):
                 self.init_repos()
 
             repo = self._repos.get(__name)  # type: ignore
-
             if repo is None:
                 raise
             if self._uow is None:
@@ -29,13 +29,17 @@ class BaseRepoCollector(ABC):
 
             return self._uow.get_repo(repo)
 
-    def init_repos(self):
-        self._repos = {}
+    @classmethod
+    def init_repos(cls):
+        cls._repos = {}
 
-        for name_, type_ in get_initializable_annotations(self.__class__, AbstractAsyncRepository):
-            self._repos[name_] = type_
+        for name_, type_ in get_initializable_annotations(cls, AbstractAsyncRepository):
+            cls._repos[name_] = type_
     
     @classmethod
     def get_repos(cls) -> Iterable:
+        if cls._repos is None:
+            cls.init_repos()
+
         return cls._repos.keys()  # type: ignore
 
