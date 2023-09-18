@@ -9,6 +9,9 @@ def get_initializable_annotations(cls, subclass: Optional[Type[Any]] = None, *, 
                 raise NotImplementedError(f"`{type_}` isn't class, for initializable annotation")
             continue
 
+        if type_ is subclass:
+            continue
+
         if subclass and not issubclass(type_, subclass):
             if raise_on_not_class:
                 raise NotImplementedError(f"`{type_}` isn't subclass of `{subclass}`, for initializable annotation")
