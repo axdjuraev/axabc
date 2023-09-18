@@ -12,5 +12,4 @@ __all__ = [
 TIModel = TypeVar("TIModel", bound=BaseModel)
 TOModel = TypeVar("TOModel", bound=BaseModel)
 TRepo = TypeVar("TRepo", bound=AbstractAsyncRepository)
-TUOW = TypeVar("TUOW", bound=AbstractAsyncRepository)
 

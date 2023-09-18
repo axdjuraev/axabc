@@ -1,9 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Type
 
-from .types import TRepo, TUOW
 from .abstract_uow import AbstractUOW
-from .base_repo_collector import BaseRepoCollector
+from .repo_collector import BaseRepoCollector
 
 
 class AbstractUOWFactory(ABC):
