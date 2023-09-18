@@ -10,24 +10,34 @@ from .abstract_repo_collector import AbstractRepoCollector
 
 @dataclass
 class BaseRepoCollector(AbstractRepoCollector, ABC):
-    _uow: Optional[AbstractUOW] = None
+    __abstract__ = False
+
     _repos: Optional[dict] = None
+    _uow: Optional[AbstractUOW] = None
+
+    def __init_subclass__(cls) -> None:
+        if cls.__abstract__ or cls is BaseRepoCollector:
+            return
+        cls.init_repos()
 
     def __getattribute__(self, __name: str):
         try:
             attr = super().__getattribute__(__name)
             return attr
         except AttributeError:
-            if self._repos is None:
-                self.init_repos()
+            if self.__class__._repos is None:
+                raise
 
-            repo = self._repos.get(__name)  # type: ignore
+            repo = self.__class__._repos.get(__name)
+
             if repo is None:
                 raise
+
             if self._uow is None:
                 raise NotImplementedError
 
-            return self._uow.get_repo(repo)
+            setattr(self, __name, self._uow.get_repo(repo))
+            return getattr(self, __name)
 
     @classmethod
     def init_repos(cls):
@@ -39,7 +49,7 @@ class BaseRepoCollector(AbstractRepoCollector, ABC):
     @classmethod
     def get_repos(cls) -> Iterable:
         if cls._repos is None:
-            cls.init_repos()
+            raise
 
-        return cls._repos.keys()  # type: ignore
+        return cls._repos.keys()
 
