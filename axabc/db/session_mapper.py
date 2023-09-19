@@ -1,4 +1,4 @@
-from typing import Protocol, Type, runtime_checkable
+from typing import Optional, Protocol, Type, runtime_checkable
 from .repo_collector import BaseRepoCollector
 
 
@@ -29,10 +29,15 @@ class LazySessionMaker(Protocol):
 
 
 class SessionMakersMapper:
-    def __init__(self, repos: Type[BaseRepoCollector], common: LazySessionMaker, mapper: dict[str, LazySessionMaker]) -> None:
+    def __init__(
+        self, 
+        repos: Type[BaseRepoCollector], 
+        common: Optional[LazySessionMaker] = None, 
+        mapper: Optional[dict[str, LazySessionMaker]] = None,
+    ) -> None:
         self.repos = repos
         self.common = common
-        self.mapper = mapper
+        self.mapper = mapper or {}
         self._verify_session_makers()
 
     def _verify_session_makers(self):
@@ -46,7 +51,7 @@ class SessionMakersMapper:
                 raise NotImplementedError(f'`{repo_name}`.session_maker is not instance of LazySessionMaker')
 
     def get(self, repo_name: str) -> LazySessionMaker:
-        return self.mapper.get(repo_name) or self.common
+        return self.mapper.get(repo_name) or self.common  # type: ignore
 
 
 class SessionMapper:

@@ -1,3 +1,4 @@
+from .base_schemas import BaseSchema
 from .async_repository import AbstractAsyncRepository
 from .abstract_repo_collector import AbstractRepoCollector
 from .repo_collector import BaseRepoCollector
@@ -8,6 +9,7 @@ from .async_uowf import AsyncUOWFactory
 
 
 __all__ = [
+    "BaseSchema",
     "AbstractAsyncRepository",
     "AbstractRepoCollector",
     "BaseRepoCollector",
