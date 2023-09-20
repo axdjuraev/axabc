@@ -7,8 +7,8 @@ DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S.%f"
 
 class BaseSchema(BaseModel):
     is_active: bool = True
-    created_at: datetime = Field(default_factory=datetime.now, strict=False)
-    updated_at: datetime | None = Field(strict=False)
+    created_at: datetime = Field(default_factory=datetime.now)
+    updated_at: datetime | None
 
     def jdict(self):
         res = self.dict()
