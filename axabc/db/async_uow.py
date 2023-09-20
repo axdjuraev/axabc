@@ -11,7 +11,7 @@ TRepoCollector = TypeVar('TRepoCollector', bound=BaseRepoCollector)
 
 class AsyncUOW(AbstractUOW, Generic[TRepoCollector]):
     def __init__(self, repo: Type[TRepoCollector], sessions_mapper: SessionMapper) -> None:
-        self.repo: TRepoCollector = repo(_uow=self)  # type: ignore
+        self.repo: TRepoCollector = repo()
         self.sessions_mapper = sessions_mapper
         self.is_session_closed: bool = False
         self.used_repos: dict[str, AbstractAsyncRepository] = {}
