@@ -4,6 +4,7 @@ from .abstract_uow import AbstractUOW
 from .async_repository import AbstractAsyncRepository
 from .repo_collector import BaseRepoCollector
 from .session_mapper import SessionMapper
+from .combined_repository import CombinedRepository
 
 
 TRepoCollector = TypeVar('TRepoCollector', bound=BaseRepoCollector)
@@ -41,7 +42,7 @@ class AsyncUOW(AbstractUOW, Generic[TRepoCollector]):
         
         repo_name = repo_cls.__name__ 
         if not repo_name in self.used_repos:
-            session = self.sessions_mapper.require(repo_name)
+            session = self if isinstance(repo_cls, CombinedRepository) else self.sessions_mapper.require(repo_name)
             self.used_repos[repo_name] = repo_cls(session)
 
         return self.used_repos[repo_name]

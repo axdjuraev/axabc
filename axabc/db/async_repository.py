@@ -22,3 +22,4 @@ class AbstractAsyncRepository(ABC):
 
     async def all(self, *identifier: List[Any]):
         raise NotImplementedError
+

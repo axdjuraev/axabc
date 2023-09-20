@@ -57,7 +57,7 @@ class BaseRepoCollector(AbstractRepoCollector, ABC):
     @classmethod
     def get_repos(cls) -> Iterable:
         if cls._repos is None:
-            raise
+            cls.init_repos()
 
-        return cls._repos.keys()
+        return cls._repos.keys()  # type: ignore
 
