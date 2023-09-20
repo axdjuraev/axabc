@@ -6,6 +6,7 @@ from .async_uow import AsyncUOW
 from .abstract_uowf import AbstractUOWFactory
 from .async_uowf import AsyncUOWFactory
 from .base_schemas import BaseSchema
+from .combined_repository import CombinedRepository
 
 
 __all__ = [
@@ -17,5 +18,6 @@ __all__ = [
     "AbstractUOWFactory",
     "AsyncUOWFactory",
     "BaseSchema",
+    "CombinedRepository",
 ]
 
