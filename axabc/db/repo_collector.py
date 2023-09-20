@@ -13,16 +13,20 @@ class BaseRepoCollector(AbstractRepoCollector, ABC):
     _repos: Optional[dict] = None
     _uow: Optional[AbstractUOW] = None
 
+
+    @staticmethod
+    def _is_abstract(cls_):
+        return cls_.__abstract__ and '__abstract__' in cls_.__dict__
+
     def __init_subclass__(cls) -> None:
-        if cls.__abstract__ and '__abstract__' in cls.__dict__:
-            return print(f'axlog: cancel from {cls.__name__}')
+        if cls._is_abstract(cls):
+            return 
 
         cls.init_repos()
 
         for parent in cls.mro():
-            if not issubclass(parent, BaseRepoCollector) or parent.__abstract__:
+            if not issubclass(parent, BaseRepoCollector) or cls._is_abstract(parent):
                 break
-            print(f'axlog: inherit from {parent.__name__}')
             cls._repos.update(parent._repos)  # type: ignore
 
     def __getattribute__(self, __name: str):
@@ -48,7 +52,6 @@ class BaseRepoCollector(AbstractRepoCollector, ABC):
         cls._repos = {}
 
         for name_, type_ in get_initializable_annotations(cls, AbstractAsyncRepository):
-            print(f'axlog init repo: {name_}')
             cls._repos[name_] = type_
     
     @classmethod
