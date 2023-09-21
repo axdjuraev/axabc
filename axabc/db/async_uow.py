@@ -43,7 +43,6 @@ class AsyncUOW(AbstractUOW, Generic[TRepoCollector]):
         repo_name = repo_cls.__name__ 
         if not repo_name in self.used_repos:
             session = self if issubclass(repo_cls, CombinedRepository) else self.sessions_mapper.require(repo_name)
-            print(f"{repo_name}:{type(session)}")
             self.used_repos[repo_name] = repo_cls(session)
 
         return self.used_repos[repo_name]
