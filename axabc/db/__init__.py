@@ -7,6 +7,7 @@ from .abstract_uowf import AbstractUOWFactory
 from .async_uowf import AsyncUOWFactory
 from .base_schemas import BaseSchema
 from .combined_repository import CombinedRepository
+from .session_mapper import SessionMakersMapper
 
 
 __all__ = [
@@ -19,5 +20,6 @@ __all__ = [
     "AsyncUOWFactory",
     "BaseSchema",
     "CombinedRepository",
+    "SessionMakersMapper",
 ]
 
