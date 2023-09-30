@@ -16,3 +16,6 @@ class BaseSchema(BaseModel):
         res['updated_at'] = self.updated_at and self.updated_at.strftime(DATETIME_FORMAT)
         return res
 
+    class Config:
+        orm_mode = True
+
