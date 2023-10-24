@@ -1,12 +1,13 @@
 import logging
-from typing import Any
 from uuid import uuid4, UUID
 from dataclasses import dataclass
+
 
 @dataclass
 class LogResult:
     id: UUID
     msg: str
+
 
 class LoggerWithID(logging.Logger):
     def __init__(self, name, level=logging.NOTSET):
@@ -37,3 +38,9 @@ class LoggerWithID(logging.Logger):
             super()._log(level, msg, args, **kwargs)
 
         return LogResult(id=unique_id, msg=msg)
+
+    @classmethod
+    def create(cls, name: str):
+        cls.manager.loggerClass = cls
+        return cls.manager.getLogger(name)
+
